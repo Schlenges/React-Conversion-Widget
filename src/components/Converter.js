@@ -13,10 +13,24 @@ const Converter = () => {
         let temp = unitA.unit === "Celsius" ? input * 1.8000 + 32.00 : (input - 32) / 1.8000
         return temp.toFixed(1)
       case "weight":
-        let weight = unitA.unit === "Kilogram" ? input * 2.2046 : input / 2.2046
-        return weight.toFixed(1)
+        let weight
+
+        if(unitA.unit === "Kilogram" || unitA.unit === "Pound"){
+          weight = unitA.unit === "Kilogram" ? input * 2.2046 : input / 2.2046
+        } else {
+          weight = unitA.unit === "Gram" ? input * 0.035274 : input / 0.035274
+        }
+
+        return weight.toFixed(2)
       case "length":
-        let length = unitA.unit === "Meters" ? input * 3.2808 : input / 3.2808
+        let length
+
+        if(unitA.unit === "Meter" || unitA.unit === "Feet"){
+          length = unitA.unit === "Meter" ? input * 3.2808 : input / 3.2808
+        } else {
+          length = unitA.unit === "Centimeter" ? input * 0.39370 : input / 0.39370
+        }
+
         return length.toFixed(2)
     }
   }
@@ -32,14 +46,13 @@ const Converter = () => {
   }
 
   const changeUnit = (value) => {
+    value = value === "weight" ? "lbs" : value
+    value = value === "length" ? "ft" : value
+
     switch (value) {
       case "temperature":
         setUnitA({unit: "Celsius", symbol: "°C"})
         setUnitB({unit: "Fahrenheit", symbol: "°F"})
-        break
-      case "weight":
-        setUnitA({unit: "Kilogram", symbol: "kg"})
-        setUnitB({unit: "Pound", symbol: "lbs"})
         break
       case "lbs":
         setUnitA({unit: "Kilogram", symbol: "kg"})
@@ -49,12 +62,8 @@ const Converter = () => {
         setUnitA({unit: "Gram", symbol: "g"})
         setUnitB({unit: "Ounce", symbol: "oz"})
         break
-      case "length":
-        setUnitA({unit: "Meters", symbol: "m"})
-        setUnitB({unit: "Feet", symbol: "ft"})
-        break
       case "ft":
-        setUnitA({unit: "Meters", symbol: "m"})
+        setUnitA({unit: "Meter", symbol: "m"})
         setUnitB({unit: "Feet", symbol: "ft"})
         break
       case "in":
@@ -69,8 +78,6 @@ const Converter = () => {
     setUnitB(unitA)
     // clear form after switch?
   }
-
-  console.log(unitB)
 
   return (
     <div>
@@ -126,11 +133,5 @@ const Converter = () => {
     </div>
   )
 }
-
-// g * 0.035274
-// oz / 0.035274
-
-// cm * 0.39370
-// in / 0.39370
 
 export default Converter
