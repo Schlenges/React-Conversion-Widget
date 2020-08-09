@@ -27,6 +27,11 @@ const Converter = () => {
   }
 
   const onSelectChange = (value) => {
+    changeUnit(value)
+    setMeasurement(value)
+  }
+
+  const changeUnit = (value) => {
     switch (value) {
       case "temperature":
         setUnitA({unit: "Celsius", symbol: "°C"})
@@ -36,13 +41,27 @@ const Converter = () => {
         setUnitA({unit: "Kilogram", symbol: "kg"})
         setUnitB({unit: "Pound", symbol: "lbs"})
         break
+      case "lbs":
+        setUnitA({unit: "Kilogram", symbol: "kg"})
+        setUnitB({unit: "Pound", symbol: "lbs"})
+        break
+      case "oz":
+        setUnitA({unit: "Gram", symbol: "g"})
+        setUnitB({unit: "Ounce", symbol: "oz"})
+        break
       case "length":
         setUnitA({unit: "Meters", symbol: "m"})
         setUnitB({unit: "Feet", symbol: "ft"})
         break
+      case "ft":
+        setUnitA({unit: "Meters", symbol: "m"})
+        setUnitB({unit: "Feet", symbol: "ft"})
+        break
+      case "in":
+        setUnitA({unit: "Centimeter", symbol: "cm"})
+        setUnitB({unit: "Inch", symbol: "in"})
+        break
     }
-
-    setMeasurement(value)
   }
 
   const onSwitch = () => {
@@ -50,6 +69,8 @@ const Converter = () => {
     setUnitB(unitA)
     // clear form after switch?
   }
+
+  console.log(unitB)
 
   return (
     <div>
@@ -64,6 +85,23 @@ const Converter = () => {
           <option value="weight">Weight</option>
           <option value="length">Length</option>
         </select>
+
+        {measurement === "weight" 
+          ? (
+            <select name="weights" onChange={({target}) => changeUnit(target.value)}>
+              <option value="lbs">kg, lbs</option>
+              <option value="oz">g, oz</option>
+            </select>
+          )
+          : measurement === "length"
+            ? (
+              <select name="lengths" value={unitB.symbol} onChange={({target}) => changeUnit(target.value)}>
+                <option value="ft">m, ft</option>
+                <option value="in">cm, in</option>
+              </select>
+            )
+            : null
+        }
 
         <p>Convert from {unitA.unit} to {unitB.unit} 
         <button onClick={() => onSwitch()}>switch</button></p>
