@@ -1,38 +1,6 @@
 import React, { useState } from 'react'
-
-const measures = {
-  temperature: {
-    set1: {
-      conversion: [1.8000, 32],
-      "Celsius": {unit: "Celsius", symbol: "°C"},
-      "Fahrenheit": {unit: "Fahrenheit", symbol: "°F"}
-    }
-  },
-  weight: {
-    set1: {
-      conversion: 2.2046,
-      "Kilogram": {unit: "Kilogram", symbol: "kg"},
-      "Pound": {unit: "Pound", symbol: "lbs"}
-    },
-    set2: {
-      conversion: 0.035274,
-      "Gram": {unit: "Gram", symbol: "g"},
-      "Ounce": {unit: "Ounce", symbol: "oz"}
-    }
-  },
-  length: {
-    set1: {
-      conversion: 3.2808,
-      "Meter": {unit: "Meter", symbol: "m"},
-      "Feet": {unit: "Feet", symbol: "ft"}
-    },
-    set2: {
-      conversion: 0.39370,
-      "Centimeter": {unit: "Centimeter", symbol: "cm"},
-      "Inch": {unit: "Inch", symbol: "in"}
-    }
-  }
-}
+import MeasureSelect from './MeasureSelect'
+import measures from '../data/measures'
 
 const Converter = () => {
   const [unitA, setUnitA] = useState(measures.temperature.set1["Celsius"])
@@ -40,29 +8,6 @@ const Converter = () => {
   const [measurement, setMeasurement] = useState("temperature")
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
-
-  const _convert = (measurement) => {
-    let {set1, set2} = measures[measurement]
-
-    return Object.keys(set1).includes(unitA.unit)
-      ? _calculate(unitA.unit, set1.conversion)
-      : _calculate(unitA.unit, set2.conversion)
-  }
-
-  const _calculate = (unit, conversionVal) => {
-    if(["Celsius", "Fahrenheit"].includes(unit)){
-      let val = unit === "Celsius"
-        ? input * conversionVal[0] + conversionVal[1]
-        : (input - conversionVal[1]) / conversionVal[0]
-      return val.toFixed(1)
-    }
-
-    let val = ["Kilogram", "Gram", "Meter", "Centimeter"].includes(unit) 
-      ? input * conversionVal 
-      : input / conversionVal
-
-    return val.toFixed(2)
-  }
 
   const onSubmit = (event) => {
     event.preventDefault()
@@ -72,6 +17,12 @@ const Converter = () => {
   const onSelectChange = (value) => {
     changeUnit(value)
     setMeasurement(value)
+  }
+
+  const onSwitch = () => {
+    setUnitA(unitB)
+    setUnitB(unitA)
+    // clear form after switch?
   }
 
   const changeUnit = (value) => {
@@ -105,42 +56,38 @@ const Converter = () => {
     }
   }
 
-  const onSwitch = () => {
-    setUnitA(unitB)
-    setUnitB(unitA)
-    // clear form after switch?
+  const _convert = (measurement) => {
+    let {set1, set2} = measures[measurement]
+
+    return Object.keys(set1).includes(unitA.unit)
+      ? _calculate(unitA.unit, set1.conversion)
+      : _calculate(unitA.unit, set2.conversion)
+  }
+
+  const _calculate = (unit, conversionVal) => {
+    if(["Celsius", "Fahrenheit"].includes(unit)){
+      let val = unit === "Celsius"
+        ? input * conversionVal[0] + conversionVal[1]
+        : (input - conversionVal[1]) / conversionVal[0]
+      return val.toFixed(1)
+    }
+
+    let val = ["Kilogram", "Gram", "Meter", "Centimeter"].includes(unit) 
+      ? input * conversionVal 
+      : input / conversionVal
+
+    return val.toFixed(2)
   }
 
   return (
     <div>
       <form onSubmit={onSubmit}>
-        <label htmlFor="measurements">Measurements: </label>
-        <select 
-          name="measurements"
-          id="measurements" 
-          onChange={({target}) => onSelectChange(target.value)}
-        >
-          <option value="temperature">Temperature</option>
-          <option value="weight">Weight</option>
-          <option value="length">Length</option>
-        </select>
-
-        {measurement === "weight" 
-          ? (
-            <select name="weights" onChange={({target}) => changeUnit(target.value)}>
-              <option value="lbs">kg, lbs</option>
-              <option value="oz">g, oz</option>
-            </select>
-          )
-          : measurement === "length"
-            ? (
-              <select name="lengths" value={unitB.symbol} onChange={({target}) => changeUnit(target.value)}>
-                <option value="ft">m, ft</option>
-                <option value="in">cm, in</option>
-              </select>
-            )
-            : null
-        }
+        <MeasureSelect 
+          onSelectChange={onSelectChange} 
+          measurement={measurement}
+          changeUnit={changeUnit}
+          unit={unitB.symbol}
+        />
 
         <p>Convert from {unitA.unit} to {unitB.unit} 
         <button onClick={() => onSwitch()}>switch</button></p>
