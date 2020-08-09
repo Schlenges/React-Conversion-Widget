@@ -1,38 +1,67 @@
 import React, { useState } from 'react'
 
+const measures = {
+  temperature: {
+    set1: {
+      conversion: [1.8000, 32],
+      "Celsius": {unit: "Celsius", symbol: "°C"},
+      "Fahrenheit": {unit: "Fahrenheit", symbol: "°F"}
+    }
+  },
+  weight: {
+    set1: {
+      conversion: 2.2046,
+      "Kilogram": {unit: "Kilogram", symbol: "kg"},
+      "Pound": {unit: "Pound", symbol: "lbs"}
+    },
+    set2: {
+      conversion: 0.035274,
+      "Gram": {unit: "Gram", symbol: "g"},
+      "Ounce": {unit: "Ounce", symbol: "oz"}
+    }
+  },
+  length: {
+    set1: {
+      conversion: 3.2808,
+      "Meter": {unit: "Meter", symbol: "m"},
+      "Feet": {unit: "Feet", symbol: "ft"}
+    },
+    set2: {
+      conversion: 0.39370,
+      "Centimeter": {unit: "Centimeter", symbol: "cm"},
+      "Inch": {unit: "Inch", symbol: "in"}
+    }
+  }
+}
+
 const Converter = () => {
-  const [unitA, setUnitA] = useState({unit: "Celsius", symbol: "°C"})
-  const [unitB, setUnitB] = useState({unit: "Fahrenheit", symbol: "°F"})
+  const [unitA, setUnitA] = useState(measures.temperature.set1["Celsius"])
+  const [unitB, setUnitB] = useState(measures.temperature.set1["Fahrenheit"])
   const [measurement, setMeasurement] = useState("temperature")
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
 
   const _convert = (measurement) => {
-    switch (measurement) {
-      case "temperature":
-        let temp = unitA.unit === "Celsius" ? input * 1.8000 + 32.00 : (input - 32) / 1.8000
-        return temp.toFixed(1)
-      case "weight":
-        let weight
+    let {set1, set2} = measures[measurement]
 
-        if(unitA.unit === "Kilogram" || unitA.unit === "Pound"){
-          weight = unitA.unit === "Kilogram" ? input * 2.2046 : input / 2.2046
-        } else {
-          weight = unitA.unit === "Gram" ? input * 0.035274 : input / 0.035274
-        }
+    return Object.keys(set1).includes(unitA.unit)
+      ? _calculate(unitA.unit, set1.conversion)
+      : _calculate(unitA.unit, set2.conversion)
+  }
 
-        return weight.toFixed(2)
-      case "length":
-        let length
-
-        if(unitA.unit === "Meter" || unitA.unit === "Feet"){
-          length = unitA.unit === "Meter" ? input * 3.2808 : input / 3.2808
-        } else {
-          length = unitA.unit === "Centimeter" ? input * 0.39370 : input / 0.39370
-        }
-
-        return length.toFixed(2)
+  const _calculate = (unit, conversionVal) => {
+    if(["Celsius", "Fahrenheit"].includes(unit)){
+      let val = unit === "Celsius"
+        ? input * conversionVal[0] + conversionVal[1]
+        : (input - conversionVal[1]) / conversionVal[0]
+      return val.toFixed(1)
     }
+
+    let val = ["Kilogram", "Gram", "Meter", "Centimeter"].includes(unit) 
+      ? input * conversionVal 
+      : input / conversionVal
+
+    return val.toFixed(2)
   }
 
   const onSubmit = (event) => {
@@ -46,29 +75,32 @@ const Converter = () => {
   }
 
   const changeUnit = (value) => {
+    let {temperature, weight, length} = measures
     value = value === "weight" ? "lbs" : value
     value = value === "length" ? "ft" : value
 
     switch (value) {
       case "temperature":
-        setUnitA({unit: "Celsius", symbol: "°C"})
-        setUnitB({unit: "Fahrenheit", symbol: "°F"})
+        setUnitA(temperature.set1["Celsius"])
+        setUnitB(temperature.set1["Fahrenheit"])
         break
       case "lbs":
-        setUnitA({unit: "Kilogram", symbol: "kg"})
-        setUnitB({unit: "Pound", symbol: "lbs"})
+        setUnitA(weight.set1["Kilogram"])
+        setUnitB(weight.set1["Pound"])
         break
       case "oz":
-        setUnitA({unit: "Gram", symbol: "g"})
-        setUnitB({unit: "Ounce", symbol: "oz"})
+        setUnitA(weight.set2["Gram"])
+        setUnitB(weight.set2["Ounce"])
         break
       case "ft":
-        setUnitA({unit: "Meter", symbol: "m"})
-        setUnitB({unit: "Feet", symbol: "ft"})
+        setUnitA(length.set1["Meter"])
+        setUnitB(length.set1["Feet"])
         break
       case "in":
-        setUnitA({unit: "Centimeter", symbol: "cm"})
-        setUnitB({unit: "Inch", symbol: "in"})
+        setUnitA(length.set2["Centimeter"])
+        setUnitB(length.set2["Inch"])
+        break
+      default:
         break
     }
   }
