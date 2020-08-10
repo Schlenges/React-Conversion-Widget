@@ -42,16 +42,18 @@ const Input = ({unitA, unitB, measurement}) => {
         placeholder={unitA.unit}
         onChange={({target}) => setInput(target.value)}
       />
-        {unitA.symbol} ➜ 
+      <label> {unitA.symbol} </label>
+      <span> ➜ </span>
       <input
         type="text"
         id="output"
         value={output}
         placeholder={unitB.unit}
         readOnly
-      /> {unitB.symbol}
+      />
+      <label> {unitB.symbol} </label>
 
-      <button onClick={onSubmit}>convert</button>
+      <button className="pure-button convert-button" onClick={onSubmit}>convert</button>
     </div>
   )
 }

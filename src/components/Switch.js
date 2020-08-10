@@ -8,8 +8,10 @@ const Switch = ({unitA, unitB, setUnitA, setUnitB}) => {
   }
 
   return (
-    <p>Convert from {unitA.unit} to {unitB.unit} 
-      <button onClick={onSwitch}>switch</button>
+    <p>Convert from <strong>{unitA.unit}</strong> to <strong>{unitB.unit}</strong> 
+      <button className="pure-button button-small" onClick={onSwitch}>
+        <i className="fas fa-exchange-alt"></i> switch
+      </button>
     </p>
   )
 }

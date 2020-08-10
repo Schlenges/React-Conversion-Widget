@@ -46,8 +46,12 @@ const Converter = () => {
   }
 
   return (
-    <div>
-      <form>
+    <div className="container">
+      <div className="header">
+        <h1>Metric Conversion</h1>
+      </div>
+      <form className="pure-form">
+        <fieldset>
         <MeasureSelect 
           onSelectChange={onSelectChange} 
           measurement={measurement}
@@ -62,6 +66,7 @@ const Converter = () => {
           unitB={unitB}
           measurement={measurement}
         />
+        </fieldset>
       </form>
     </div>
   )

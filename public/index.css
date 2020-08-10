@@ -1,0 +1,50 @@
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vH;
+  background: rgb(238,174,202);
+  background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%); 
+}
+
+label {
+  font-size: 1.5em;
+}
+
+select {
+  margin-right: 0.5em;
+}
+
+form {
+  padding: 1em;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 20px 20px;
+}
+
+.container {
+  display: inline-block;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20px 20px 0 0;
+}
+
+.pure-button {
+  border-radius: 4px;
+  margin: 1em;
+}
+
+.convert-button {
+  display: block;
+  margin: 1.5em 0 0;
+  color: white;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  background: rgb(66, 184, 221);
+}
+
+.button-small {
+  font-size: 85%;
+}
