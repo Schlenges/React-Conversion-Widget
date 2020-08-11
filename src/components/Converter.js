@@ -8,41 +8,35 @@ const Converter = () => {
   const [unitA, setUnitA] = useState(measures.temperature.set1["Celsius"])
   const [unitB, setUnitB] = useState(measures.temperature.set1["Fahrenheit"])
   const [measurement, setMeasurement] = useState("temperature")
+  const [input, setInput] = useState("")
+  const [output, setOutput] = useState("")
 
-  const onSelectChange = (value) => {
-    changeUnit(value)
-    setMeasurement(value)
+  const onSubmit = (event) => {
+    event.preventDefault()
+    setOutput(_convert(measurement))
   }
 
-  const changeUnit = (value) => {
-    let {temperature, weight, length} = measures
-    value = value === "weight" ? "lbs" : value
-    value = value === "length" ? "ft" : value
+  const _convert = (measurement) => {
+    let {set1, set2} = measures[measurement]
 
-    switch (value) {
-      case "temperature":
-        setUnitA(temperature.set1["Celsius"])
-        setUnitB(temperature.set1["Fahrenheit"])
-        break
-      case "lbs":
-        setUnitA(weight.set1["Kilogram"])
-        setUnitB(weight.set1["Pound"])
-        break
-      case "oz":
-        setUnitA(weight.set2["Gram"])
-        setUnitB(weight.set2["Ounce"])
-        break
-      case "ft":
-        setUnitA(length.set1["Meter"])
-        setUnitB(length.set1["Feet"])
-        break
-      case "in":
-        setUnitA(length.set2["Centimeter"])
-        setUnitB(length.set2["Inch"])
-        break
-      default:
-        break
+    return Object.keys(set1).includes(unitA.unit)
+      ? _calculate(unitA.unit, set1.conversion)
+      : _calculate(unitA.unit, set2.conversion)
+  }
+
+  const _calculate = (unit, conversionVal) => {
+    if(["Celsius", "Fahrenheit"].includes(unit)){
+      let val = unit === "Celsius"
+        ? input * conversionVal[0] + conversionVal[1]
+        : (input - conversionVal[1]) / conversionVal[0]
+      return val.toFixed(1)
     }
+
+    let val = ["Kilogram", "Gram", "Meter", "Centimeter"].includes(unit) 
+      ? input * conversionVal 
+      : input / conversionVal
+
+    return val.toFixed(2)
   }
 
   return (
@@ -50,22 +44,28 @@ const Converter = () => {
       <div className="header">
         <h1>Metric Conversion</h1>
       </div>
-      <form className="pure-form">
+      <form className="pure-form" onSubmit={onSubmit}>
         <fieldset>
-        <MeasureSelect 
-          onSelectChange={onSelectChange} 
-          measurement={measurement}
-          changeUnit={changeUnit}
-          unit={unitB.symbol}
-        />
+          <MeasureSelect 
+            measurement={measurement}
+            setMeasurement={setMeasurement}
+            unit={unitB.symbol}
+            setUnitA={setUnitA}
+            setUnitB={setUnitB}/>
 
-        <Switch unitA={unitA} unitB={unitB} setUnitA={setUnitA} setUnitB={setUnitB}/>
+          <Switch 
+            unitA={unitA} 
+            unitB={unitB} 
+            setUnitA={setUnitA} 
+            setUnitB={setUnitB} 
+            setOutput={setOutput}/>
 
-        <Input
-          unitA={unitA}
-          unitB={unitB}
-          measurement={measurement}
-        />
+          <Input
+            unitA={unitA}
+            unitB={unitB}
+            input={input}
+            output={output}
+            setInput={setInput}/>
         </fieldset>
       </form>
     </div>
