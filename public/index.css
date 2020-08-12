@@ -20,7 +20,8 @@ form {
 
 .container {
   display: inline-block;
-  margin-top: 5em;
+  width: 505px;
+  /* margin-top: 5em; */
 }
 
 .header {
